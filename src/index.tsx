@@ -1,5 +1,7 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
+import { countryData } from './data/countries'
+import { renderPage } from './renderer'
 
 const app = new Hono()
 
@@ -26,7 +28,9 @@ app.get('/api/country/:code', (c) => {
   return c.json(data)
 })
 
-const countryData = {
+export default app
+
+const _LEGACY_DATA = {
   MW: {
     name: 'Malawi',
     flag: '🇲🇼',
@@ -476,7 +480,8 @@ function renderPage(country: string): string {
 
     /* ==================== COUNTRY CONTEXT BANNER ==================== */
     #country-banner {
-      position: relative; z-index: 10;
+      position: relative; z-index: 20;
+      margin-top: 72px;
       background: var(--brand);
       padding: 14px 5%;
       display: flex; align-items: center; justify-content: space-between;
@@ -1270,12 +1275,14 @@ function renderPage(country: string): string {
       <div style="font-size:10px;color:rgba(255,255,255,0.7);font-family:Inter;letter-spacing:2px;text-transform:uppercase">Premium Billboard · ${c.name}</div>
     </div>
   </div>
+  
   <div class="hero-billboard-2">
     <div class="billboard-inner">
       <i class="fas fa-rectangle-ad" style="font-size:24px;color:rgba(255,255,255,0.2)"></i>
       <div style="font-size:11px;color:rgba(255,255,255,0.4);font-family:Inter;text-align:center">LARGE FORMAT<br>PRINTING</div>
     </div>
   </div>
+
   <div class="hero-billboard-3">
     <div class="billboard-inner">
       <div style="font-size:9px;color:rgba(255,255,255,0.3);font-family:Inter;letter-spacing:1px">FIRSTMARK</div>
@@ -1288,20 +1295,26 @@ function renderPage(country: string): string {
       <div class="pulse"></div>
       ${c.flag} ${c.name}'s Premier Outdoor Advertising Agency
     </div>
+
     <div class="hero-subtitle">Billboard Advertising</div>
+
     <h1 class="hero-title">
       ${c.heroText.split(' ').slice(0, -2).join(' ')}<br>
       <span class="accent">${c.heroText.split(' ').slice(-2).join(' ')}</span>
     </h1>
+
     <p class="hero-desc">${c.subText}</p>
+
     <div class="hero-actions">
-      <a href="#contact" class="btn-primary">
+      <a href="#contact" class="btn-primary" style="width: 100%;">
         <i class="fas fa-rocket"></i> Start Your Campaign
       </a>
-      <a href="#services" class="btn-secondary">
+
+      <a href="#services" class="btn-secondary" style="width: 100%;">
         <i class="fas fa-play-circle"></i> Explore Services
       </a>
     </div>
+
     <div class="hero-stats">
       ${c.stats.map(s => `
         <div class="hero-stat">
@@ -1841,8 +1854,9 @@ function renderPage(country: string): string {
         </ul>
       </div>
     </div>
+
     <div class="footer-bottom">
-      <p>© 2025 Firstmark Advertising. All rights reserved. · Malawi · Zambia · Zimbabwe</p>
+      <p>© 2025 Firstmark Marketing. All rights reserved. · Malawi · Zambia · Zimbabwe</p>
       <div class="footer-countries">
         <a href="/?country=MW" class="footer-country">🇲🇼 Malawi</a>
         <a href="/?country=ZM" class="footer-country">🇿🇲 Zambia</a>
@@ -1857,6 +1871,7 @@ function renderPage(country: string): string {
   <a href="https://wa.me/265999123456" class="sticky-btn" title="WhatsApp Us" target="_blank">
     <i class="fab fa-whatsapp"></i>
   </a>
+
   <button class="sticky-btn secondary back-to-top" id="back-to-top" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <i class="fas fa-arrow-up"></i>
   </button>
